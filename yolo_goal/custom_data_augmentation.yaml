@@ -1,0 +1,14 @@
+# https://docs.ultralytics.com/guides/yolo-data-augmentation/
+data:
+model: yolo11n.pt
+epochs: 100
+hsv_s: 0.7
+hsv_v: 0.5
+degrees: 180
+translate: 0.2
+scale: 0.25
+shear: 5
+perspective: 0.0005
+flipud: 0.5
+fliplr: 0.5
+mosaic: 1

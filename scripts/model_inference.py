@@ -2,7 +2,7 @@ import argparse
 
 import cv2 as cv
 from ultralytics import YOLO
-from utils.aux import get_latest_model
+from utils.utils_aux import get_latest_model
 from scripts.finite_state_machine import OperationFSM
 
 

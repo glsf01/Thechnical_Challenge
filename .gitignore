@@ -1,0 +1,6 @@
+# created by virtualenv automatically
+/dataset/
+/scripts/yolo11n.pt
+/provided_materials/
+/runs/detect/train/
+/runs/detect/train2/

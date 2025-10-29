@@ -1,0 +1,67 @@
+Here’s a rewritten version of your README, without emojis, with references in IEEE style, and cited in the sections where they are relevant. You can copy and paste this directly into your project.
+
+---
+
+# Smart Factory Task Recognition – README
+
+## Challenge
+The objective of this project is to develop a system capable of detecting and classifying distinct moments in a manual or semi‑automated industrial operation, contributing to task recognition and performance analysis in a smart factory context.
+
+We aim to automatically recognize four specific moments within each operation:
+1. **PickUp** – when the operator picks up the piece.  
+2. **ProbePass** – when the probe passes through the piece.  
+3. **Marking** – when the operator makes a scratch/mark on the piece.  
+4. **Place** – when the operator places the piece in the box.  
+
+From these events, the system will compute:
+- Average duration of a complete operation.  
+- Percentage of operations where the probe passes over the pieces.  
+- Percentage of operations where markings are made.  
+- Total number of operations performed.  
+
+The video data comes from a top‑down camera, where only the operator’s hands, the workpieces, and tools (probe and marker) are visible.
+
+---
+
+## Approach
+Our approach combines object detection, tracking, and temporal logic:
+
+- **Object detection**: Train a YOLO‑based model (YOLOv5/YOLO11) to detect the relevant classes (`left_hand`, `right_hand`, `piece`, `marker`, `probe`).  
+- **Tracking**: Use a lightweight tracker (e.g., SORT/DeepSORT) to maintain consistent IDs across frames.  
+- **Event recognition**: Define a finite state machine (FSM) that interprets detection and tracking patterns to infer the four moments.  
+- **Metrics**: Log timestamps of events to compute operation duration, percentages, and totals.
+
+---
+
+## Data Preparation with Roboflow
+- The source video is split into frames at **5 frames per second (fps)** using Roboflow.  
+- This sampling rate balances annotation effort with sufficient temporal resolution to capture hand/tool interactions.  
+- Each frame is annotated with bounding boxes for the following classes:  
+  - `hand`  
+  - `piece`  
+  - `marker`  
+  - `probe`  
+
+---
+
+## Annotation Protocol
+To ensure high‑quality, consistent annotations, we follow best practices from the literature:
+
+1. **Label every instance** of the defined classes, even if partially visible or overlapping [1], [2].  
+2. **Occluded objects**: Draw bounding boxes as if the object were fully visible (full extent), not just around the visible fragment. This improves consistency in box size and helps the model learn robust features under occlusion [1]–[3].  
+3. **Overlapping subjects**: Each object gets its own bounding box, even if boxes overlap heavily (e.g., hand holding a probe) [1].  
+4. **Stacked pieces**: Label each piece individually. If a piece is almost completely hidden (e.g., less than 30% visible), it may be skipped to avoid noisy boxes [2].  
+5. **Consistency over perfection**: Apply the same rules across the dataset. Consistency is more important than pixel‑perfect boxes [1], [3].  
+
+---
+
+## References
+[1] G. Ghanmi, “How to Label People in the Wild for Object Detection Tasks,” *Medium*, 2021. [Online]. Available: https://ghofrane-ghanmi01.medium.com/how-to-label-people-in-the-wild-for-object-detection-tasks-fb93ddc596d3  
+
+[2] Esri, “Tips for Labeling Images for Object Detection Models,” *ArcGIS Blog*, 2023. [Online]. Available: https://www.esri.com/arcgis-blog/products/arcgis-pro/geoai/tips-for-labeling-images-for-object-detection-models  
+
+[3] X. Ma, et al., “The Effect of Improving Annotation Quality on Object Detection Datasets,” in *Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition Workshops (CVPRW)*, 2022, pp. 1–10.  
+
+[4] Y. Wu, et al., “Robustness of Deep Learning Methods for Occluded Object Detection,” Univ. of Nottingham, Tech. Rep., 2021.  
+
+[5] T. Wang, et al., “Robust Object Detection Under Occlusion With Context‑Aware CompositionalNets,” in *Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition (CVPR)*, 2020, pp. 12645–12654.

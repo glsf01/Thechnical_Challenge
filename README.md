@@ -26,8 +26,7 @@ The video data comes from a top‑down camera, where only the operator’s hands
 ## Approach
 Our approach combines object detection, tracking, and temporal logic:
 
-- **Object detection**: Train a YOLO‑based model (YOLOv5/YOLO11) to detect the relevant classes (`left_hand`, `right_hand`, `piece`, `marker`, `probe`).  
-- **Tracking**: Use a lightweight tracker (e.g., SORT/DeepSORT) to maintain consistent IDs across frames.  
+- **Object detection**: Train a YOLO‑based model (YOLO11n) to detect the relevant classes (`hand`, `piece`, `marker`, `probe`).
 - **Event recognition**: Define a finite state machine (FSM) that interprets detection and tracking patterns to infer the four moments.  
 - **Metrics**: Log timestamps of events to compute operation duration, percentages, and totals.
 
@@ -47,13 +46,34 @@ Our approach combines object detection, tracking, and temporal logic:
 ## Annotation Protocol
 To ensure high‑quality, consistent annotations, we follow best practices from the literature:
 
-1. **Label every instance** of the defined classes, even if partially visible or overlapping [1], [2].  
+1. **Label every instance** of the defined classes, even if partially visible or overlapping, with max of 15 annotations [1], [2].  
 2. **Occluded objects**: Draw bounding boxes as if the object were fully visible (full extent), not just around the visible fragment. This improves consistency in box size and helps the model learn robust features under occlusion [1]–[3].  
 3. **Overlapping subjects**: Each object gets its own bounding box, even if boxes overlap heavily (e.g., hand holding a probe) [1].  
-4. **Stacked pieces**: Label each piece individually. If a piece is almost completely hidden (e.g., less than 30% visible), it may be skipped to avoid noisy boxes [2].  
+4. **Stacked pieces**: Label each piece individually. If a piece is almost mostly hidden (e.g., less than 50% visible), it may be skipped to avoid noisy boxes [2].  
 5. **Consistency over perfection**: Apply the same rules across the dataset. Consistency is more important than pixel‑perfect boxes [1], [3].  
 
 ---
+
+## Implementation of Finite State Machine (FSM)
+The Finite State Machine (FSM) is the core of the event recognition logic. It enforces the strict sequence of actions:
+
+1. **PickUp**: Triggered when either hand overlaps with a piece.
+2. **ProbePass**: Triggered when the probe overlaps with the piece. 
+3. **Marking**: Triggered when the marker overlaps with the piece.
+4. **Place**: Triggered when only one hand remains visible.
+
+The FSM uses Intersection Over Union (IoU) to identify a possible event and a cool‑down mechanism to suppress duplicate events across consecutive frames and ensures that counters (probe_passes, markings) only increment when a new event is emitted. This prevents flooding of events when a tool remains overlapping the piece for multiple frames.
+
+---
+
+## How to Run:
+
+1. Clone the repository and install dependencies
+git clone https://github.com/glsf01/Thechnical_Challenge.git
+pip install -r requirements.txt
+
+2. Run object detection and visualization on a video at:
+python scripts/model_inference.py
 
 ## References
 [1] G. Ghanmi, “How to Label People in the Wild for Object Detection Tasks,” *Medium*, 2021. [Online]. Available: https://ghofrane-ghanmi01.medium.com/how-to-label-people-in-the-wild-for-object-detection-tasks-fb93ddc596d3  

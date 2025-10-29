@@ -1,6 +1,8 @@
+import argparse
+
 import cv2 as cv
 from ultralytics import YOLO
-from aux import get_latest_model
+from utils.aux import get_latest_model
 from scripts.finite_state_machine import OperationFSM
 
 
@@ -124,10 +126,13 @@ def run_yolo_fsm_inference(model_path: str, video_path: str, display_predictions
     print("Final metrics:", fsm.summary())
 
 if __name__ == "__main__":
-    trained_models = "../../runs/detect/"
-    model_name = get_latest_model(trained_models)
-    model_path = f"../../runs/detect/{model_name}/weights/best.pt"
-    video_path = "../../provided_materials/tarefas_cima_3_parts.mp4"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--models_dir", default="../runs/detect/", help="Path to trained models directory")
+    parser.add_argument("--video", default="../provided_materials/tarefas_cima_3_parts.mp4", help="Path to input video")
+    parser.add_argument("--display", default=True, help="Display predictions")
+    args = parser.parse_args()
 
-    # run_yolo_inference(model_path, video_path)
-    run_yolo_fsm_inference(model_path, video_path, display_predictions=True)
+    model_name = get_latest_model(args.models_dir)
+    model_path = f"{args.models_dir}/{model_name}/weights/best.pt"
+
+    run_yolo_fsm_inference(model_path, args.video, display_predictions=args.display)

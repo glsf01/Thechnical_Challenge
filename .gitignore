@@ -1,6 +1,7 @@
 # created by virtualenv automatically
 /dataset/
 /scripts/yolo11n.pt
-/provided_materials/
 /runs/detect/train/
 /runs/detect/train2/
+/provided_materials/challenge_hands/
+/provided_materials/tarefas_cima.mp4

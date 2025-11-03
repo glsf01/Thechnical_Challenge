@@ -1,7 +1,3 @@
-Here’s a rewritten version of your README, without emojis, with references in IEEE style, and cited in the sections where they are relevant. You can copy and paste this directly into your project.
-
----
-
 # Smart Factory Task Recognition – README
 
 ## Challenge

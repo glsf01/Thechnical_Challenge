@@ -3,7 +3,7 @@
 ## Challenge
 The objective of this project is to develop a system capable of detecting and classifying distinct moments in a manual or semi‑automated industrial operation, contributing to task recognition and performance analysis in a smart factory context.
 
-We aim to automatically recognize four specific moments within each operation:
+The aim to automatically recognize four specific moments within each operation:
 1. **PickUp** – when the operator picks up the piece.  
 2. **ProbePass** – when the probe passes through the piece.  
 3. **Marking** – when the operator makes a scratch/mark on the piece.  
@@ -20,7 +20,7 @@ The video data comes from a top‑down camera, where only the operator’s hands
 ---
 
 ## Approach
-Our approach combines object detection, tracking, and temporal logic:
+This approach combines object detection, tracking, and temporal logic:
 
 - **Object detection**: Train a YOLO‑based model (YOLO11n) to detect the relevant classes (`hand`, `piece`, `marker`, `probe`).
 - **Event recognition**: Define a finite state machine (FSM) that interprets detection and tracking patterns to infer the four moments.  
@@ -28,7 +28,7 @@ Our approach combines object detection, tracking, and temporal logic:
 
 ---
 
-## Data Preparation with Roboflow
+## Data Preparation with Roboflow for training
 - The source video is split into frames at **5 frames per second (fps)** using Roboflow.  
 - This sampling rate balances annotation effort with sufficient temporal resolution to capture hand/tool interactions.  
 - Each frame is annotated with bounding boxes for the following classes:  
@@ -40,7 +40,7 @@ Our approach combines object detection, tracking, and temporal logic:
 ---
 
 ## Annotation Protocol
-To ensure high‑quality, consistent annotations, we follow best practices from the literature:
+To ensure high‑quality, consistent annotations, practices from literature are followed:
 
 1. **Label every instance** of the defined classes, even if partially visible or overlapping, with max of 15 annotations [1], [2].  
 2. **Occluded objects**: Draw bounding boxes as if the object were fully visible (full extent), not just around the visible fragment. This improves consistency in box size and helps the model learn robust features under occlusion [1]–[3].  
